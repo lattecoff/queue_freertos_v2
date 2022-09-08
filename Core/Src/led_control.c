@@ -9,6 +9,7 @@
 
 #include "timers.h"
 
+#include "queue.h"
 /* Private define ------------------------------------------------------------*/
 extern char cmd_led_on[];
 extern char cmd_led_off[];

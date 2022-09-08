@@ -164,7 +164,7 @@ int main(void)
 	}*/
 
   /* USER CODE BEGIN RTOS_THREADS */
-  xLedTask = xTaskCreate( my_led_task, "LED_TASK", 512, ( void * ) 0, 5, xLedTask );
+  xLedTask = xTaskCreate( my_led_task, "LED_TASK", 512, ( void * ) 0, 5, NULL );
   /* USER CODE END RTOS_THREADS */
 
   /* Start scheduler */
