@@ -22,7 +22,7 @@ extern char cmd_led_blink[];
 extern xQueueHandle xLedCmdQueue;
 
 TaskHandle_t xLedTask = NULL;
-
+led_t Led;
 /* Extern variables ---------------------------------------------------------*/
 
 /* Private variables --------------------------------------------------------*/
@@ -57,17 +57,30 @@ void my_led_task(void)
 //	static char buff[16] = {'\0'};
 	uint8_t itemQReceive = 0;
 
-	xQueueReceive(xLedCmdQueue, &itemQReceive, pdMS_TO_TICKS(100));
+	  xLedCmdQueue = xQueueCreate( 5, sizeof(Led.state) );
+	  if (xLedCmdQueue != NULL)
+	  {
+	  	;
+	  }
+	  else
+	  {
+	  	; // Очередь не была создана.
+	  }
+
+	///xQueueReceive(xLedCmdQueue, &itemQReceive, pdMS_TO_TICKS(100));
 
 	for(;;)
 	{
-		if ((led_state_t)itemQReceive == LED_ON)
-			led_on();
+		if (xQueueReceive(xLedCmdQueue, &itemQReceive, pdMS_TO_TICKS(100)) == pdPASS )
+		{
+			if ((led_state_t)itemQReceive == LED_ON)
+				led_on();
 
-		else if ((led_state_t)itemQReceive == LED_OFF)
-			led_off();
+			else if ((led_state_t)itemQReceive == LED_OFF)
+				led_off();
 
-		else if ((led_state_t)itemQReceive == LED_BLINK)
-			led_toggle();
+			else if ((led_state_t)itemQReceive == LED_BLINK)
+				led_toggle();
+		}
 	}
 }

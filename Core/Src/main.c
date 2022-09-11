@@ -137,15 +137,7 @@ int main(void)
   /* USER CODE END RTOS_TIMERS */
 
   /* USER CODE BEGIN RTOS_QUEUES */
-  xLedCmdQueue = xQueueCreate( 5, 12 );
-  if (xLedCmdQueue != NULL)
-  {
-  	;
-  }
-  else
-  {
-  	; // Очередь не была создана.
-  }
+
   /* USER CODE END RTOS_QUEUES */
 
 	/*for (int i = 0; i < 10; ++i)
@@ -310,7 +302,7 @@ void uart2_rx_byte_handler(const char b)
 {
 	static char buff[16] = {'\0'};
 	static uint8_t i = 0;
-	volatile uint8_t itemQSend = 0;
+
 
 	buff[i] = b;
 	i++;
@@ -319,23 +311,23 @@ void uart2_rx_byte_handler(const char b)
 		if ( strcmp (buff, cmd_led_on) == 0)
 		{
 			//led_on();
-			itemQSend = LED_ON;
-			xQueueSendToBackFromISR(xLedCmdQueue, &itemQSend, 2);
+			Led.state = LED_ON;
+			xQueueSendToBackFromISR(xLedCmdQueue, &Led.state, 2);
 			memset (buff, '\0', sizeof(buff));
 
 			i = 0;
 		}
 
-		/*else if (strcmp(buff, cmd_led_off) == 0)
+		else if (strcmp(buff, cmd_led_off) == 0)
 		{
-			//led_off();
-			xQueueSendToBackFromISR(xLedCmdQueue, buff, 2);
+			Led.state = LED_OFF;
+			xQueueSendToBackFromISR(xLedCmdQueue, &Led.state, 2);
 			memset (buff, '\0', sizeof(buff));
 
 			i = 0;
 		}
 
-		else if (strcmp(buff, cmd_led_blink) == 0)
+		/*else if (strcmp(buff, cmd_led_blink) == 0)
 		{
 			//xQueueSendToBackFromISR(xLedCmdQueue, buff, 2);
 			memset (buff, '\0', sizeof(buff));

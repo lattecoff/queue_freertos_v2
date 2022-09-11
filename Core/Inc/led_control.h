@@ -28,6 +28,8 @@ void vCallbackSwTimerLed (TimerHandle_t xTimer);
 
 void my_led_task(void);
 
+extern led_t Led;
+
 #ifdef __cplusplus
 }
 #endif
