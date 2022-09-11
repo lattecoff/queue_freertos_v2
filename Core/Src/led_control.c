@@ -1,4 +1,6 @@
 /* Includes ------------------------------------------------------------------*/
+#include "string.h"
+
 #include "FreeRTOSConfig.h"
 
 #include "stm32l4xx_hal.h"
@@ -10,6 +12,8 @@
 #include "timers.h"
 
 #include "queue.h"
+
+#include "led_control.h"
 /* Private define ------------------------------------------------------------*/
 extern char cmd_led_on[];
 extern char cmd_led_off[];
@@ -50,11 +54,20 @@ void vCallbackSwTimerLed (TimerHandle_t xTimer)
 void my_led_task(void)
 {
 	//static uint8_t flashSeries = 0;
+//	static char buff[16] = {'\0'};
+	uint8_t itemQReceive = 0;
 
+	xQueueReceive(xLedCmdQueue, &itemQReceive, pdMS_TO_TICKS(100));
 
 	for(;;)
 	{
-		xQueueReceive(xLedCmdQueue, cmd_led_on, pdMS_TO_TICKS(100));
+		if ((led_state_t)itemQReceive == LED_ON)
+			led_on();
 
+		else if ((led_state_t)itemQReceive == LED_OFF)
+			led_off();
+
+		else if ((led_state_t)itemQReceive == LED_BLINK)
+			led_toggle();
 	}
 }

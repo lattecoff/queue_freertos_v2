@@ -45,9 +45,9 @@
 /* USER CODE BEGIN PM */
 extern TaskHandle_t xLedTask;
 
-char cmd_led_on[] = "on";
-char cmd_led_off[] = "off";
-char cmd_led_blink[] = "blink";
+char cmd_led_on[] = "on\r\n";
+char cmd_led_off[] = "off\r\n";
+char cmd_led_blink[] = "blink\r\n";
 
 
 xQueueHandle xLedCmdQueue;
@@ -310,7 +310,7 @@ void uart2_rx_byte_handler(const char b)
 {
 	static char buff[16] = {'\0'};
 	static uint8_t i = 0;
-
+	volatile uint8_t itemQSend = 0;
 
 	buff[i] = b;
 	i++;
@@ -319,17 +319,17 @@ void uart2_rx_byte_handler(const char b)
 		if ( strcmp (buff, cmd_led_on) == 0)
 		{
 			//led_on();
-			xQueueSendToBackFromISR(xLedCmdQueue, cmd_led_on, 2);
-
-
+			itemQSend = LED_ON;
+			xQueueSendToBackFromISR(xLedCmdQueue, &itemQSend, 2);
 			memset (buff, '\0', sizeof(buff));
 
 			i = 0;
 		}
 
-		else if (strcmp(buff, cmd_led_off) == 0)
+		/*else if (strcmp(buff, cmd_led_off) == 0)
 		{
 			//led_off();
+			xQueueSendToBackFromISR(xLedCmdQueue, buff, 2);
 			memset (buff, '\0', sizeof(buff));
 
 			i = 0;
@@ -337,11 +337,11 @@ void uart2_rx_byte_handler(const char b)
 
 		else if (strcmp(buff, cmd_led_blink) == 0)
 		{
-			//led_toggle();
+			//xQueueSendToBackFromISR(xLedCmdQueue, buff, 2);
 			memset (buff, '\0', sizeof(buff));
 
 			i = 0;
-		}
+		}*/
 	}
 }
 
