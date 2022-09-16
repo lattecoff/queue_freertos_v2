@@ -27,7 +27,7 @@ void led_toggle(void);
 void vCallbackSwTimerLed (TimerHandle_t xTimer);
 
 void my_led_task(void);
-void my_led_flash_task(void);
+void my_led_blink_task(void);
 
 extern led_t Led;
 

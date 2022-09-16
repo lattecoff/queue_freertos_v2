@@ -310,7 +310,6 @@ void uart2_rx_byte_handler(const char b)
 	{
 		if ( strcmp (buff, cmd_led_on) == 0)
 		{
-			//led_on();
 			Led.state = LED_ON;
 			xQueueSendToBackFromISR(xLedCmdQueue, &Led.state, 2);
 			memset (buff, '\0', sizeof(buff));
@@ -327,13 +326,14 @@ void uart2_rx_byte_handler(const char b)
 			i = 0;
 		}
 
-		/*else if (strcmp(buff, cmd_led_blink) == 0)
+		else if (strcmp(buff, cmd_led_blink) == 0)
 		{
-			//xQueueSendToBackFromISR(xLedCmdQueue, buff, 2);
+			Led.state = LED_BLINK;
+			xQueueSendToBackFromISR(xLedCmdQueue, &Led.state, 2);
 			memset (buff, '\0', sizeof(buff));
 
 			i = 0;
-		}*/
+		}
 	}
 }
 
