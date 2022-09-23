@@ -305,35 +305,34 @@ void uart2_rx_byte_handler(const char b)
 
 
 	buff[i] = b;
+
 	i++;
-	if (buff[i] == '\0')
+	if (i > sizeof(buff))
 	{
-		if ( strcmp (buff, cmd_led_on) == 0)
+		memset (buff, '\0', sizeof(buff));
+		i = 0;
+	}
+
+	if ((buff[i -1] == '\n') && (buff[i -2] == '\r'))
+	{
+		if (memcmp(cmd_led_on, &buff, sizeof(cmd_led_on)) == 0)
 		{
 			Led.state = LED_ON;
 			xQueueSendToBackFromISR(xLedCmdQueue, &Led.state, 2);
-			memset (buff, '\0', sizeof(buff));
-
-			i = 0;
 		}
-
-		else if (strcmp(buff, cmd_led_off) == 0)
+		else if (memcmp(cmd_led_off, &buff, sizeof(cmd_led_off)) == 0)
 		{
 			Led.state = LED_OFF;
 			xQueueSendToBackFromISR(xLedCmdQueue, &Led.state, 2);
-			memset (buff, '\0', sizeof(buff));
-
-			i = 0;
 		}
-
-		else if (strcmp(buff, cmd_led_blink) == 0)
+		else if (memcmp(cmd_led_blink, &buff, sizeof(cmd_led_blink)) == 0)
 		{
 			Led.state = LED_BLINK;
 			xQueueSendToBackFromISR(xLedCmdQueue, &Led.state, 2);
-			memset (buff, '\0', sizeof(buff));
-
-			i = 0;
 		}
+
+		memset (buff, '\0', sizeof(buff));
+		i = 0;
 	}
 }
 

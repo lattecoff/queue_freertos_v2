@@ -98,6 +98,10 @@ void my_led_task(void)
 					xTimerStart( Led.xSwTimerLed, 0 );
 					led_off();
 				}
+				else
+				{
+					xTimerStart( Led.xSwTimerLed, 0);
+				}
 			}
 		}
 	}
